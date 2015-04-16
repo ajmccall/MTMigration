@@ -45,6 +45,16 @@ typedef void (^MTExecutionBlock)(void);
 + (void) applicationUpdateBlock:(MTExecutionBlock)updateBlock;
 
 /**
+ 
+ Executes a block of code for every time the application version changes.
+ 
+ @param updateBlock A block object to be executed when the application version changes. This parameter can't be nil.
+ @param ignoreFirstInstall Set to YES to not run the updateBlock when no app version is found. This is useful to avoid calling the updateBlock on first time install. Calling with NO, will have same effect as calling applicationUpdateBlock:(MTExecutionBlock)updateBlock;
+ */
+
++ (void) applicationUpdateBlock:(MTExecutionBlock)updateBlock ignoreFirstInstall:(BOOL)ignoreFirstInstall;
+
+/**
 
  Executes a block of code for every time the application build number changes.
 

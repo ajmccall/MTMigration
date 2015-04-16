@@ -51,13 +51,29 @@ static NSString * const MTMigrationLastAppBuildKey   = @"MTMigration.lastAppBuil
 
 
 + (void) applicationUpdateBlock:(MTExecutionBlock)updateBlock {
-    if (![[self lastAppVersion] isEqualToString:[self appVersion]]) {
-        updateBlock();
+    
+    [self applicationUpdateBlock:updateBlock ignoreFirstInstall:NO];
+}
 
-        #if DEBUG
++ (void) applicationUpdateBlock:(MTExecutionBlock)updateBlock ignoreFirstInstall:(BOOL)ignoreFirstInstall {
+    
+    BOOL lastAppVersionExists = ![[self lastAppVersion] isEqualToString:@""];
+    BOOL performCheck = lastAppVersionExists || !ignoreFirstInstall;
+    
+    if(performCheck) {
+        
+        BOOL appVersionDifferent = ![[self lastAppVersion] isEqualToString:[self appVersion]];
+        if (appVersionDifferent) {
+            updateBlock();
+            
+#if DEBUG
             NSLog(@"MTMigration: Running update Block for version %@", [self appVersion]);
-        #endif
-
+#endif
+            
+            [self setLastAppVersion:[self appVersion]];
+        }
+    } else {
+        
         [self setLastAppVersion:[self appVersion]];
     }
 }
